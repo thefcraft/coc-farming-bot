@@ -4,6 +4,7 @@ import logging
 
 from src.agent import CocAgent
 from src.config import Config
+from src.notify import beep
 
 logger = logging.getLogger(__name__)
 
@@ -18,7 +19,13 @@ def main() -> None:
     while True:
         _ = agent.find_attack()
 
+        if config.notify:
+            beep()
+
         agent.attack()
+        
+        if config.notify:
+            beep()
 
         time.sleep(config.wait_next_attack_seconds)
         

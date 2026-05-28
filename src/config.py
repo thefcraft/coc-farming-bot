@@ -83,6 +83,8 @@ class Config(BaseSettings):
     wait_next_attack_seconds: float = 3.0
     max_tries: int = 10
 
+    notify: bool = False
+
 
     model_config = SettingsConfigDict(
         env_nested_delimiter="__",
