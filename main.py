@@ -16,17 +16,30 @@ def main() -> None:
     agent = CocAgent(config=config)
     logger.debug("CocAgent initialized")
 
+    num_tries: int = 0
     while True:
-        _ = agent.find_attack()
+        if num_tries == 0:
+            agent.start_attack()
+        loot_info = agent.find_attack(
+            return_on_max_tries=config.next_attack_if_loot_info_failed
+        )
+        if loot_info is None and config.next_attack_if_loot_info_failed:
+            logger.debug("Pressing next attack button")
+            agent.press_next_attack(wait_seconds=config.wait_seconds)
+            num_tries += 1
+            if num_tries >= config.max_tries_loot_info_failed:
+                logger.error("max_tries_loot_info_failed reached")
+                raise RuntimeError("max_tries_loot_info_failed reached.")
+            continue
 
         agent.attack()
-        
+
         if config.notify:
             beep()
 
         time.sleep(config.wait_next_attack_seconds)
-        
-    
+        num_tries = 0
+
 
 if __name__ == "__main__":
 

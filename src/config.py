@@ -84,6 +84,9 @@ class Config(BaseSettings):
     max_tries: int = 10
     max_wait_attack_seconds: int = 500
 
+    next_attack_if_loot_info_failed: bool = True
+    max_tries_loot_info_failed: int = 3
+
     notify: bool = False
 
 

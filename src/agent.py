@@ -3,6 +3,7 @@ import time
 import uiautomator2 as u2  # pyright: ignore[reportMissingTypeStubs]
 import xml.etree.ElementTree as ET
 from io import StringIO
+from typing import Literal, overload
 from .types import HasRead, ImageCv2, ImagePil, PointLike, RegionLike
 from .config import Config
 from . import img_parser
@@ -93,8 +94,8 @@ class CocAgent(CocAgentBase):
             region=self.config.loot_info_region,
         )
         return img_parser.get_loot_info(screen)
-
-    def find_attack(self) -> img_parser.LootInfo:
+    
+    def start_attack(self) -> None:
         logger.debug("Pressing attack button")
         self.press_attack(wait_seconds=self.config.wait_seconds)
 
@@ -104,6 +105,16 @@ class CocAgent(CocAgentBase):
         logger.debug("Pressing final attack button")
         self.press_final_attack(wait_seconds=self.config.wait_seconds)
 
+
+    @overload
+    def find_attack(self, *, return_on_max_tries: Literal[False] = False) -> img_parser.LootInfo: ...
+    @overload
+    def find_attack(
+        self, *, return_on_max_tries: Literal[True]
+    ) -> img_parser.LootInfo | None: ...
+    def find_attack(
+        self, *, return_on_max_tries: bool = False
+    ) -> img_parser.LootInfo | None:
         logger.info(
             "Waiting for loot info (max_tries=%s, wait_seconds=%s)",
             self.config.max_tries,
@@ -146,6 +157,8 @@ class CocAgent(CocAgentBase):
             num_tries += 1
             if num_tries >= self.config.max_tries:
                 logger.error("max_tries reached")
+                if return_on_max_tries:
+                    return None
                 raise RuntimeError("max_tries reached.")
 
         return info
