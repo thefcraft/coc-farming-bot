@@ -19,9 +19,6 @@ def main() -> None:
     while True:
         _ = agent.find_attack()
 
-        if config.notify:
-            beep()
-
         agent.attack()
         
         if config.notify:

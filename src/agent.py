@@ -190,6 +190,11 @@ class CocAgent(CocAgentBase):
                     "Checking for return home button (attempt=%s)",
                     num_checks,
                 )
+            if num_checks > self.config.max_wait_attack_seconds:
+                logger.error(
+                    "Return home button not detected after %s seconds", num_checks
+                )
+                raise RuntimeError("Timed out waiting for return home button")
 
             screen = self.screenshot_cv(
                 region=self.config.return_home_region,

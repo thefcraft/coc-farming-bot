@@ -82,6 +82,7 @@ class Config(BaseSettings):
     wait_seconds: float = 1.0
     wait_next_attack_seconds: float = 3.0
     max_tries: int = 10
+    max_wait_attack_seconds: int = 500
 
     notify: bool = False
 
